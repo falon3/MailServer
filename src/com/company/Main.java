@@ -2,14 +2,14 @@ package com.company;
 
 import java.io.IOException;
 import java.util.*;
-/*import org.apache.http.HttpResponse;
- import org.apache.http.NameValuePair;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.client.methods.HttpPost;
-*/import javax.mail.*;
+import javax.mail.*;
 
 public class Main {
 
@@ -41,7 +41,7 @@ public class Main {
             int final_report_ind = messages.length;
             Message message = messages[messages.length - 4];
             ArrayList words1 = extract(message.getContent().toString());
-/*            List<NameValuePair> urlP = new ArrayList<NameValuePair>();
+            List<NameValuePair> urlP = new ArrayList<NameValuePair>();
             urlP.add(new BasicNameValuePair("category","Location"));
             urlP.add(new BasicNameValuePair("hash", "619e6968a7"));
             urlP.add(new BasicNameValuePair("time", words1.get(6) + " " + words1.get(7)));
@@ -73,7 +73,7 @@ public class Main {
 
                 }
             }
-            */
+
         for(Object s: words1) {
             System.out.println(s);
         }
