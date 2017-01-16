@@ -43,9 +43,9 @@ public class Main {
             ArrayList words1 = extract(message.getContent().toString());
             List<NameValuePair> urlP = new ArrayList<NameValuePair>();
             urlP.add(new BasicNameValuePair("category","Location"));
-            urlP.add(new BasicNameValuePair("hash", "619e6968a7"));
+            urlP.add(new BasicNameValuePair("watch_id", words1.get(2).toString()));
             urlP.add(new BasicNameValuePair("time", words1.get(6) + " " + words1.get(7)));
-            urlP.add(new BasicNameValuePair("activity_type", "Seen at"));
+            urlP.add(new BasicNameValuePair("activity_type", "watch location"));
             urlP.add(new BasicNameValuePair("locLat",words1.get(8).toString()));
             urlP.add(new BasicNameValuePair("locLon",words1.get(9).toString()));
             SafeTracks.close(false);
@@ -54,7 +54,7 @@ public class Main {
             // Send to server
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
             try {
-                HttpPost request = new HttpPost("http://127.0.0.1:8000/add_record/");
+                HttpPost request = new HttpPost("http://127.0.0.1:5000/add_record/");
                 request.addHeader("content-type", "application/x-www-form-urlencoded");
                 request.setEntity(new UrlEncodedFormEntity(urlP));
                 HttpResponse response = httpClient.execute(request);
