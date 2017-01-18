@@ -39,44 +39,47 @@ public class Main {
 
             // Finding the last report in the notifications
             int final_report_ind = messages.length;
-            Message message = messages[messages.length - 4];
-            ArrayList words1 = extract(message.getContent().toString());
-            List<NameValuePair> urlP = new ArrayList<NameValuePair>();
-            urlP.add(new BasicNameValuePair("category","Location"));
-            urlP.add(new BasicNameValuePair("watch_id", words1.get(2).toString()));
-            urlP.add(new BasicNameValuePair("time", words1.get(6) + " " + words1.get(7)));
-            urlP.add(new BasicNameValuePair("activity_type", "watch location"));
-            urlP.add(new BasicNameValuePair("locLat",words1.get(8).toString()));
-            urlP.add(new BasicNameValuePair("locLon",words1.get(9).toString()));
+            System.out.println(final_report_ind);
+            for (int i=100; i>=0; i--) {
+                Message message = messages[messages.length - 4 - i];
+                ArrayList words1 = extract(message.getContent().toString());
+                List<NameValuePair> urlP = new ArrayList<NameValuePair>();
+                urlP.add(new BasicNameValuePair("category", "Location"));
+                urlP.add(new BasicNameValuePair("watch_id", words1.get(2).toString()));
+                urlP.add(new BasicNameValuePair("time", words1.get(6) + " " + words1.get(7)));
+                urlP.add(new BasicNameValuePair("activity_type", String.format("watch location %2d", i)));
+                urlP.add(new BasicNameValuePair("locLat", words1.get(8).toString()));
+                urlP.add(new BasicNameValuePair("locLon", words1.get(9).toString()));
+
+
+                // Send to server
+                CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+                try {
+                    HttpPost request = new HttpPost("http://127.0.0.1:5000/add_record/");
+                    request.addHeader("content-type", "application/x-www-form-urlencoded");
+                    request.setEntity(new UrlEncodedFormEntity(urlP));
+                    HttpResponse response = httpClient.execute(request);
+                    System.out.println("------------");
+                    System.out.println(response);
+                    System.out.println("------------");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        httpClient.close();
+                    } catch (IOException e) {
+
+                    }
+                }
+                for(Object s: words1) {
+                    System.out.println(s);
+                }
+            }
             SafeTracks.close(false);
             store.close();
 
-            // Send to server
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-            try {
-                HttpPost request = new HttpPost("http://127.0.0.1:5000/add_record/");
-                request.addHeader("content-type", "application/x-www-form-urlencoded");
-                request.setEntity(new UrlEncodedFormEntity(urlP));
-                HttpResponse response = httpClient.execute(request);
-                System.out.println("------------");
-                System.out.println(response);
-                System.out.println("------------");
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            finally {
-                try {
-                    httpClient.close();
-                }
-                catch(IOException e){
 
-                }
-            }
 
-        for(Object s: words1) {
-            System.out.println(s);
-        }
         }
         catch (NoSuchProviderException e){
             e.printStackTrace();
