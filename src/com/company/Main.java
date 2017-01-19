@@ -1,6 +1,7 @@
 package com.company;
 
-import java.io.IOException;
+
+import java.io.*;
 import java.util.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -14,15 +15,53 @@ import javax.mail.*;
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
-        //System.out.println("Hi");
-        check_last_loc();
+        Properties prop = new Properties();
+        InputStream input = null;
+        try {
+            /*output = new FileOutputStream("config.properties");
+
+            // set the properties value
+            prop.setProperty("email_pass", "watch1234");
+            prop.setProperty("email_address", "ashbournwatch2@gmail.com");
+            prop.setProperty("num_notifications", "50");
+
+            // save properties to project root folder
+            prop.store(output, null);*/
+
+            input = new FileInputStream("config.properties");
+
+            // load a properties file
+            prop.load(input);
+
+            // get the property value and print it out
+            System.out.println(prop.getProperty("email_pass"));
+            System.out.println(prop.getProperty("email_address"));
+            System.out.println(prop.getProperty("num_notifications"));
+
+            String epass = prop.getProperty("email_pass");
+            String eaddress = prop.getProperty("email_address");
+            int nume =  Integer.parseInt(prop.getProperty("num_notifications"));
+
+            check_last_loc(eaddress, epass, nume);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
     }
 
 
 
 
-    public static void check_last_loc(){
+    public static void check_last_loc(String email, String pass, int num_updates){
         try{
 
             ////////////////////////////////////////////////////////////////////////////
@@ -32,7 +71,7 @@ public class Main {
             Session session = Session.getDefaultInstance(props, null);
             Store store = null;
             store = session.getStore("imaps");
-            store.connect("imap.gmail.com", "watch.notifications@gmail.com", "q1w2e3r4t");
+            store.connect("imap.gmail.com", email, pass);//email, pass);
             Folder SafeTracks = store.getFolder("Inbox");
             SafeTracks.open(Folder.READ_ONLY);
             Message[] messages = SafeTracks.getMessages();          // all of the messages in this folder
@@ -40,7 +79,7 @@ public class Main {
             // Finding the last report in the notifications
             int final_report_ind = messages.length;
             System.out.println(final_report_ind);
-            for (int i=100; i>=0; i--) {
+            for (int i=num_updates; i>0; i--) {
                 Message message = messages[messages.length - 4 - i];
                 ArrayList words1 = extract(message.getContent().toString());
                 List<NameValuePair> urlP = new ArrayList<NameValuePair>();
