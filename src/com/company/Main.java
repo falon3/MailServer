@@ -34,9 +34,9 @@ public class Main {
             prop.load(input);
 
             // get the property value and print it out
-            System.out.println(prop.getProperty("email_pass"));
-            System.out.println(prop.getProperty("email_address"));
-            System.out.println(prop.getProperty("num_notifications"));
+            //System.out.println(prop.getProperty("email_pass"));
+            //System.out.println(prop.getProperty("email_address"));
+            System.out.println("num notifications: " + prop.getProperty("num_notifications"));
 
             String epass = prop.getProperty("email_pass");
             String eaddress = prop.getProperty("email_address");
@@ -60,7 +60,7 @@ public class Main {
 
 
 
-
+    // DOES NOT HANDLE SOS UPDATES
     public static void check_last_loc(String email, String pass, int num_updates){
         try{
 
@@ -79,14 +79,19 @@ public class Main {
             // Finding the last report in the notifications
             int final_report_ind = messages.length;
             System.out.println(final_report_ind);
+            if (final_report_ind < num_updates) { // get a max of all notifications don't index out of bounds
+                num_updates = final_report_ind;
+            }
             for (int i=num_updates; i>0; i--) {
-                Message message = messages[messages.length - 4 - i];
+                System.out.println(i );
+                System.out.println(messages.length);
+                Message message = messages[messages.length - i];
                 ArrayList words1 = extract(message.getContent().toString());
                 List<NameValuePair> urlP = new ArrayList<NameValuePair>();
                 urlP.add(new BasicNameValuePair("category", "Location"));
                 urlP.add(new BasicNameValuePair("watch_id", words1.get(2).toString()));
                 urlP.add(new BasicNameValuePair("time", words1.get(6) + " " + words1.get(7)));
-                urlP.add(new BasicNameValuePair("activity_type", String.format("watch location %2d", i)));
+                urlP.add(new BasicNameValuePair("activity_type", String.format("watch location %2d", num_updates-i)));
                 urlP.add(new BasicNameValuePair("locLat", words1.get(8).toString()));
                 urlP.add(new BasicNameValuePair("locLon", words1.get(9).toString()));
 
