@@ -1,7 +1,7 @@
 # MailServer
 
 This gets notifications from SafeTracks watch and Posts the data to the Django server 
-for the [Ashbourn project](https://github.com/falon3/Ashbourne)
+for the [MoodAlert project](https://github.com/falon3/Ashbourne)
 
 ## To run:    
 first clone this project locally and open in a Java framework such as intelliJ        
